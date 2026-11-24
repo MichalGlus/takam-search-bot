@@ -1,0 +1,11 @@
+.git
+.github
+.venv
+.env
+.pytest_cache
+**/__pycache__
+data/index.db
+data/index.db.tmp
+tests
+PLAN.md
+REVIEW_PROMPT.md

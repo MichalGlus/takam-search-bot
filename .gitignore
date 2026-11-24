@@ -1,0 +1,43 @@
+# --- Secrets / environment files (keep the template) ---
+.env
+.env.*
+*.env
+!.env.example
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+node_modules/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Generated data (rebuilt from data/raw) ---
+data/index.db
+data/index.db.tmp
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.swp
+*.log
+
+# --- Personal working notes / presentation (not part of the submission) ---
+PLAN.md
+REVIEW_PROMPT.md
+DEMO_PROMPT.md
+docs/presentation/

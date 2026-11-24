@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>עוזר הוראות תכ"ם</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef1f8; --bg-grad-1:#e4e9ff; --bg-grad-2:#f4f1ff;
+  --surface:#ffffff; --surface-2:#f6f8fc; --surface-3:#eef2fa;
+  --text:#121a2f; --text-2:#4a5470; --text-3:#7a839c;
+  --line:#e2e7f2; --line-2:#d3daea;
+  --brand:#3557e6; --brand-2:#6a43e8; --brand-ink:#ffffff; --brand-soft:#e9edff; --brand-soft-2:#f1edff;
+  --ok:#11845b; --ok-soft:#e3f6ee; --warn:#a15c00; --warn-soft:#fff3df; --err:#c03535; --err-soft:#fde9e9;
+  --mark:#fff0a8;
+  --shadow-sm:0 1px 2px rgba(18,26,47,.06),0 1px 3px rgba(18,26,47,.06);
+  --shadow-md:0 8px 24px -8px rgba(18,26,47,.18),0 2px 6px rgba(18,26,47,.06);
+  --shadow-lg:0 30px 80px -20px rgba(40,56,140,.35),0 10px 30px -10px rgba(18,26,47,.18);
+  --radius:18px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0b1020; --bg-grad-1:#141c3d; --bg-grad-2:#1b1433;
+    --surface:#121933; --surface-2:#17203f; --surface-3:#1d2850;
+    --text:#e9edf9; --text-2:#b3bcd6; --text-3:#8690ad;
+    --line:#26305a; --line-2:#323e6e;
+    --brand:#6f8bff; --brand-2:#9a7bff; --brand-ink:#0b1020; --brand-soft:#1f2a5c; --brand-soft-2:#261f52;
+    --ok:#45d29b; --ok-soft:#123a2e; --warn:#ffb54d; --warn-soft:#3a2a10; --err:#ff7b7b; --err-soft:#3d1919;
+    --mark:#5b4b00;
+    --shadow-lg:0 30px 80px -20px rgba(0,0,0,.6),0 10px 30px -10px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:"Heebo",system-ui,-apple-system,"Segoe UI",Arial,sans-serif; color:var(--text);
+  background:
+    radial-gradient(1200px 600px at 100% -10%, var(--bg-grad-1), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, var(--bg-grad-2), transparent 60%),
+    var(--bg);
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit}
+a{color:var(--brand)}
+
+/* ------------------------------------------------------------ layout */
+.app{height:100%;display:flex;align-items:stretch;justify-content:center;padding:28px 16px}
+.chat{
+  width:100%;max-width:880px;display:flex;flex-direction:column;background:var(--surface);
+  border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow-lg);overflow:hidden;min-height:0;
+}
+body.embed .app{padding:0}
+body.embed .chat{max-width:none;border-radius:0;border:none;box-shadow:none}
+
+/* ------------------------------------------------------------ header */
+.head{
+  position:relative;display:flex;align-items:center;gap:14px;padding:18px 22px;color:#fff;
+  background:linear-gradient(120deg,#2a46d1 0%,#4a3fe0 55%,#7a3fe6 100%);
+}
+.head::after{content:"";position:absolute;inset:0;background:
+  radial-gradient(400px 120px at 15% 0%,rgba(255,255,255,.22),transparent 70%);pointer-events:none}
+.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(6px)}
+.logo svg{width:24px;height:24px}
+.head h1{margin:0;font-size:1.12rem;font-weight:700;letter-spacing:.1px}
+.head p{margin:2px 0 0;font-size:.84rem;opacity:.86}
+.head .grow{flex:1;min-width:0}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;padding:4px 10px;border-radius:999px;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:#7dffbf;box-shadow:0 0 0 3px rgba(125,255,191,.25)}
+.status.search .dot{background:#ffd27d;box-shadow:0 0 0 3px rgba(255,210,125,.25)}
+.status.off .dot{background:#ff8f8f;box-shadow:0 0 0 3px rgba(255,143,143,.25)}
+.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);
+  display:grid;place-items:center;cursor:pointer;color:#fff;flex:none;transition:background .15s}
+.icon-btn:hover{background:rgba(255,255,255,.22)}
+.icon-btn svg{width:18px;height:18px}
+.close-btn{display:none}
+body.embed .close-btn{display:grid}
+
+/* ------------------------------------------------------------ messages */
+.scroll{flex:1;overflow-y:auto;padding:26px 22px 10px;scroll-behavior:smooth;min-height:0}
+.scroll::-webkit-scrollbar{width:10px}
+.scroll::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:10px;border:3px solid var(--surface)}
+.row{display:flex;gap:10px;margin:0 0 18px;animation:rise .28s ease-out both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.row.user{justify-content:flex-end}
+.avatar{width:34px;height:34px;border-radius:11px;flex:none;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:var(--shadow-sm)}
+.avatar svg{width:18px;height:18px}
+.bubble{max-width:min(640px,86%);border-radius:var(--radius);padding:12px 16px;line-height:1.7;font-size:.98rem}
+.bot .bubble{background:var(--surface-2);border:1px solid var(--line);border-start-start-radius:6px}
+.user .bubble{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-start-end-radius:6px;
+  box-shadow:0 6px 16px -8px rgba(53,87,230,.6)}
+.bubble p{margin:0}
+.bubble p+p{margin-top:8px}
+.bot .bubble.wide{max-width:min(720px,92%);width:100%}
+
+.welcome h2{margin:0 0 4px;font-size:1.05rem}
+.welcome .lead{color:var(--text-2);font-size:.94rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:8px 14px;cursor:pointer;
+  font-size:.9rem;color:var(--text);transition:all .15s;text-align:start;box-shadow:var(--shadow-sm)}
+.chip:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
+.chip .k{font-size:.72rem;color:var(--text-3);display:block}
+
+/* typing / progress */
+.progress{display:flex;align-items:center;gap:10px;color:var(--text-2);font-size:.92rem}
+.typing{display:inline-flex;gap:4px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--brand);opacity:.35;animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.steps{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.steps li{display:flex;align-items:center;gap:8px;font-size:.86rem;color:var(--text-3)}
+.steps li.done{color:var(--ok)}
+.steps li.active{color:var(--text)}
+.steps .ic{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center;flex:none}
+.steps li.done .ic{background:var(--ok);border-color:var(--ok)}
+.steps li.done .ic::after{content:"";width:6px;height:3px;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.steps li.active .ic{border-color:var(--brand);border-top-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* answer */
+.answer-text{font-size:1rem}
+.label{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:.78rem;font-weight:700;color:var(--text-3);
+  text-transform:uppercase;letter-spacing:.4px}
+.label::after{content:"";flex:1;height:1px;background:var(--line)}
+.sources{display:grid;gap:8px}
+.src{border:1px solid var(--line);background:var(--surface);border-radius:14px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.src:hover{border-color:var(--line-2);box-shadow:var(--shadow-sm)}
+.src-head{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer;user-select:none}
+.num{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:.8rem;font-weight:700;flex:none;
+  background:var(--brand-soft);color:var(--brand)}
+.src-main{flex:1;min-width:0}
+.src-title{font-weight:600;font-size:.93rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.src-meta{font-size:.8rem;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.78rem;direction:ltr;unicode-bidi:isolate;
+  background:var(--surface-3);color:var(--text-2);padding:1px 6px;border-radius:6px;margin-inline-start:6px}
+.badge{font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;flex:none}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.exp{background:var(--warn-soft);color:var(--warn)}
+.chev{width:18px;height:18px;color:var(--text-3);transition:transform .2s;flex:none}
+.src.open .chev{transform:rotate(180deg)}
+.src-body{display:none;border-top:1px solid var(--line);padding:12px 14px;background:var(--surface-2)}
+.src.open .src-body{display:block}
+.crumbs{font-size:.78rem;color:var(--text-3);margin-bottom:6px}
+.excerpt{white-space:pre-wrap;font-size:.9rem;line-height:1.75;color:var(--text-2);max-height:260px;overflow:auto}
+.excerpt mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
+.src-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:.84rem;font-weight:600;text-decoration:none}
+.src-link svg{width:14px;height:14px}
+
+.callout{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px 14px;border-radius:14px;
+  background:var(--brand-soft-2);border:1px solid var(--line)}
+.callout.warn{background:var(--warn-soft)}
+.callout svg{width:18px;height:18px;flex:none;margin-top:3px;color:var(--brand-2)}
+.callout.warn svg{color:var(--warn)}
+.callout .t{font-weight:600;font-size:.9rem}
+.callout ul{margin:6px 0 0;padding:0;list-style:none;display:grid;gap:4px}
+.callout li{font-size:.88rem;color:var(--text-2)}
+.callout a{text-decoration:none;font-weight:500}
+
+.more{margin-top:10px}
+.more>summary{cursor:pointer;font-size:.86rem;color:var(--brand);font-weight:600;list-style:none;display:inline-flex;align-items:center;gap:6px}
+.more>summary::-webkit-details-marker{display:none}
+.more[open]>summary{margin-bottom:8px}
+
+.actions{display:flex;gap:6px;margin-top:12px}
+.ghost{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:5px 10px;font-size:.8rem;
+  color:var(--text-2);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.ghost:hover{color:var(--brand);border-color:var(--brand)}
+.ghost svg{width:14px;height:14px}
+.muted{color:var(--text-2)}
+.err{color:var(--err)}
+
+/* ------------------------------------------------------------ composer */
+.composer{padding:12px 16px 16px;border-top:1px solid var(--line);background:var(--surface)}
+.box{display:flex;align-items:flex-end;gap:8px;background:var(--surface-2);border:1.5px solid var(--line);
+  border-radius:18px;padding:8px 8px 8px 8px;transition:border-color .15s,box-shadow .15s}
+.box:focus-within{border-color:var(--brand);box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 16%,transparent)}
+textarea{flex:1;border:0;outline:0;resize:none;background:transparent;font:inherit;color:var(--text);font-size:1rem;
+  line-height:1.5;padding:8px 10px;max-height:140px}
+textarea::placeholder{color:var(--text-3)}
+.send{width:44px;height:44px;border-radius:14px;border:0;cursor:pointer;display:grid;place-items:center;flex:none;color:#fff;
+  background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:0 8px 18px -8px rgba(53,87,230,.8);transition:transform .12s,opacity .15s}
+.send:hover{transform:translateY(-1px)}
+.send:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.send svg{width:20px;height:20px;transform:scaleX(-1)}
+.meta-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;font-size:.78rem;color:var(--text-3)}
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.switch input{appearance:none;width:32px;height:18px;border-radius:999px;background:var(--line-2);position:relative;cursor:pointer;transition:background .15s;margin:0}
+.switch input::after{content:"";position:absolute;top:2px;inset-inline-start:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:inset-inline-start .15s;box-shadow:var(--shadow-sm)}
+.switch input:checked{background:var(--brand)}
+.switch input:checked::after{inset-inline-start:16px}
+
+@media (max-width:640px){
+  .app{padding:0}
+  .chat{border-radius:0;border:none}
+  .head{padding:14px 14px}
+  .head p{display:none}
+  .scroll{padding:18px 12px 6px}
+  .bubble{max-width:92%}
+  .avatar{display:none}
+  .meta-row .hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="chat" aria-label="עוזר הוראות תכ״ם">
+    <header class="head">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 11.5h5"/></svg>
+      </div>
+      <div class="grow">
+        <h1>עוזר הוראות תכ״ם</h1>
+        <p>תשובות מהתוכן המלא של ההוראות, עם מקור מדויק לכל תשובה</p>
+      </div>
+      <span id="status" class="status" title=""><span class="dot"></span><span id="statusText">מתחבר…</span></span>
+      <button id="reset" class="icon-btn" title="שיחה חדשה" aria-label="שיחה חדשה">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+      </button>
+      <button id="close" class="icon-btn close-btn" title="סגירה" aria-label="סגירה">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+
+    <div id="scroll" class="scroll" aria-live="polite"></div>
+
+    <footer class="composer">
+      <form id="form" class="box">
+        <textarea id="q" rows="1" placeholder="שאל/י שאלה על הוראות תכ״ם…" aria-label="שאלה"></textarea>
+        <button id="send" class="send" type="submit" aria-label="שליחה" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+        </button>
+      </form>
+      <div class="meta-row">
+        <label class="switch"><input id="expired" type="checkbox"> כולל מסמכים שאינם בתוקף</label>
+        <span class="hint">Enter לשליחה · Shift+Enter לשורה חדשה · היקף: פרק 1 – ביצוע תקציב</span>
+      </div>
+    </footer>
+  </section>
+</div>
+
+<script>
+(() => {
+"use strict";
+const $ = (id) => document.getElementById(id);
+const scrollEl = $("scroll"), form = $("form"), input = $("q"), sendBtn = $("send");
+const params = new URLSearchParams(location.search);
+if (params.get("embed") === "1") document.body.classList.add("embed");
+$("close").addEventListener("click", () => parent.postMessage({type: "takam-close"}, "*"));
+
+const ICON = {
+  bot: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3"/><rect x="4" y="7" width="16" height="12" rx="4"/><path d="M9 13h.01M15 13h.01"/><path d="M9.5 16.5c1.5 1 3.5 1 5 0"/></svg>',
+  chev: '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+  ext: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>',
+  bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+};
+const SUGGESTIONS = [
+  {k: "חתימה", q: "האם אפשר לחתום על התחייבות בחתימה דיגיטלית?"},
+  {k: "דמי מחזור", q: "מה התקרה של דמי מחזור בחשבון בנק?"},
+  {k: "מקדמות", q: "האם מותר לשלם מקדמה לפני חתימה על חוזה?"},
+  {k: "כתבי שיפוי", q: "מה ההנחיות לגבי כתבי שיפוי?"},
+  {k: "עיקולים", q: "מה עושה חשב המשרד כשמתקבל צו עיקול?"},
+];
+const TYPE = {"Instruction": "הוראה", "Message": "הודעה", "Temporary Instruction": "הוראה זמנית"};
+
+let llmEnabled = false, busy = false;
+
+// ---------------------------------------------------------------- helpers
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmtDate = (iso) => iso ? iso.split("-").reverse().join(".") : "";
+const shortCode = (code) => String(code || "").replace(/^[A-Z]+\./, "");
+const docTitle = (h) => `${TYPE[h.doc_type] || h.doc_type || "מסמך"} ${shortCode(h.doc_code)} · ${h.doc_name || h.name || ""}`;
+function sectionText(h) {
+  const parts = [];
+  if (h.section) parts.push(h.section_end ? `סעיפים ${h.section}–${h.section_end}` : `סעיף ${h.section}`);
+  const leaf = (h.heading_path || "").split(" > ").pop().replace(/^[\d.]+\s/, "");
+  if (leaf) parts.push(leaf);
+  return parts.join(" · ");
+}
+function validity(inForce, validTo) {
+  if (!inForce) return `<span class="badge exp">לא בתוקף${validTo ? " · פג " + esc(fmtDate(validTo)) : ""}</span>`;
+  return `<span class="badge ok">${validTo ? "בתוקף עד " + esc(fmtDate(validTo)) : "בתוקף"}</span>`;
+}
+const PREFIX = "ובהלמשכ";
+function queryTerms(q) {
+  const out = new Set();
+  for (const t of (q.match(/[א-תA-Za-z0-9"'״]{2,}/g) || [])) {
+    const w = t.replace(/["'״]/g, "");
+    if (w.length >= 3) out.add(w);
+    let s = w;
+    for (let i = 0; i < 2 && s.length > 3 && PREFIX.includes(s[0]); i++) { s = s.slice(1); out.add(s); }
+  }
+  return [...out].sort((a, b) => b.length - a.length);
+}
+function highlight(text, terms) {
+  let html = esc(text);
+  if (!terms.length) return html;
+  const re = new RegExp("(" + terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")", "g");
+  return html.replace(re, "<mark>$1</mark>");
+}
+function scrollDown() { requestAnimationFrame(() => { scrollEl.scrollTop = scrollEl.scrollHeight; }); }
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return r.json();
+}
+
+// ---------------------------------------------------------------- rendering
+function addRow(kind, innerHtml, wide) {
+  const row = document.createElement("div");
+  row.className = "row " + kind;
+  row.innerHTML = (kind === "bot" ? `<div class="avatar" aria-hidden="true">${ICON.bot}</div>` : "") +
+                  `<div class="bubble${wide ? " wide" : ""}">${innerHtml}</div>`;
+  scrollEl.appendChild(row);
+  scrollDown();
+  return row.querySelector(".bubble");
+}
+
+function welcome() {
+  scrollEl.innerHTML = "";
+  const b = addRow("bot", `
+    <div class="welcome">
+      <h2>שלום! אני העוזר להוראות תכ״ם 👋</h2>
+      <p class="lead">אני מחפש בתוכן המלא של ההוראות, לא רק בכותרות, ועונה רק לפי מה שכתוב בהן, עם הפניה מדויקת להוראה ולסעיף. אם התשובה לא מופיעה בהוראות, אגיד את זה.</p>
+      <div class="chips">${SUGGESTIONS.map(s => `<button class="chip" data-q="${esc(s.q)}"><span class="k">${esc(s.k)}</span>${esc(s.q)}</button>`).join("")}</div>
+    </div>`, true);
+  b.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => ask(c.dataset.q)));
+}
+
+function sourceCard(h, n, terms) {
+  const el = document.createElement("div");
+  el.className = "src";
+  el.innerHTML = `
+    <div class="src-head" role="button" tabindex="0" aria-expanded="false">
+      <span class="num">${n}</span>
+      <div class="src-main">
+        <div class="src-title">${esc(docTitle(h))}</div>
+        <div class="src-meta">${esc(sectionText(h)) || "&nbsp;"}</div>
+      </div>
+      ${validity(h.in_force, h.valid_to)}
+      ${ICON.chev}
+    </div>
+    <div class="src-body">
+      ${h.heading_path ? `<div class="crumbs">${esc(h.heading_path)}</div>` : ""}
+      <div class="excerpt">${highlight(h.text.split("\n").slice(h.heading_path ? 1 : 0).join("\n"), terms)}</div>
+      <a class="src-link" href="${esc(h.url)}" target="_blank" rel="noopener">לדף ההוראה באתר${ICON.ext}<span class="code">${esc(h.doc_code)}</span></a>
+    </div>`;
+  const head = el.querySelector(".src-head");
+  const toggle = () => { el.classList.toggle("open"); head.setAttribute("aria-expanded", el.classList.contains("open")); };
+  head.addEventListener("click", toggle);
+  head.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+  return el;
+}
+
+function sourcesBlock(hits, terms, startOpen) {
+  const wrap = document.createElement("div");
+  wrap.className = "sources";
+  hits.forEach((h, i) => {
+    const card = sourceCard(h, i + 1, terms);
+    if (startOpen && i === 0) card.classList.add("open");
+    wrap.appendChild(card);
+  });
+  return wrap;
+}
+
+function relatedBlock(related, shownCodes) {
+  const items = [...new Map(Object.values(related || {}).flat().map(r => [r.code, r])).values()]
+    .filter(r => !shownCodes.has(r.code));
+  if (!items.length) return null;
+  const el = document.createElement("div");
+  el.className = "callout";
+  el.innerHTML = `${ICON.bell}<div><div class="t">עדכונים שחלים על ההוראות האלה</div><ul>${
+    items.map(r => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc((TYPE[r.doc_type] || r.doc_type) + " " + shortCode(r.code) + " · " + r.name)}</a> ${validity(r.in_force, r.valid_to)}</li>`).join("")
+  }</ul></div>`;
+  return el;
+}
+
+function progress(bubble) {
+  bubble.innerHTML = `<div class="progress"><span class="typing"><i></i><i></i><i></i></span><span>רגע, בודק בהוראות…</span></div><ul class="steps"></ul>`;
+  const list = bubble.querySelector(".steps");
+  const steps = [];
+  return {
+    step(text) {
+      if (steps.length) { steps[steps.length - 1].className = "done"; }
+      const li = document.createElement("li");
+      li.className = "active";
+      li.innerHTML = `<span class="ic"></span><span>${esc(text)}</span>`;
+      list.appendChild(li); steps.push(li); scrollDown();
+    },
+  };
+}
+
+function renderResult(bubble, data, question) {
+  const terms = queryTerms([question, ...(data.queries || [])].join(" "));
+  bubble.classList.add("wide");
+  bubble.innerHTML = "";
+  const hits = data.hits || [];
+  const cited = data.citations || [];
+
+  if (data.mode === "answer") {
+    const p = document.createElement("div");
+    p.className = "answer-text";
+    p.innerHTML = data.answer.split(/\n+/).map(x => `<p>${esc(x)}</p>`).join("");
+    bubble.appendChild(p);
+    bubble.insertAdjacentHTML("beforeend", `<div class="label">מקורות</div>`);
+    bubble.appendChild(sourcesBlock(cited, terms, false));
+    const others = hits.filter(h => !cited.some(c => c.chunk_id === h.chunk_id));
+    if (others.length) {
+      const d = document.createElement("details");
+      d.className = "more";
+      d.innerHTML = `<summary>עוד ${others.length} קטעים שנמצאו ${ICON.chev}</summary>`;
+      d.appendChild(sourcesBlock(others, terms, false));
+      bubble.appendChild(d);
+    }
+  } else {
+    const msg = data.mode === "not_found"
+      ? (hits.length ? "לא מצאתי בהוראות תשובה ישירה לשאלה הזו. אלה הקטעים הקרובים ביותר שמצאתי:" : "לא מצאתי בהוראות של פרק 1 מידע על הנושא הזה. כדאי לנסח את השאלה אחרת או להשתמש במונחים מההוראות.")
+      : "אלה הקטעים הרלוונטיים ביותר שמצאתי בהוראות:";
+    bubble.insertAdjacentHTML("beforeend", `<p>${esc(msg)}</p>`);
+    if (data.mode === "search_only" && data.notice) {
+      bubble.insertAdjacentHTML("beforeend", `<div class="callout warn">${ICON.info}<div class="muted" style="font-size:.86rem">${esc(data.notice)}</div></div>`);
+    }
+    if (hits.length) {
+      bubble.insertAdjacentHTML("beforeend", `<div class="label">קטעים מההוראות</div>`);
+      bubble.appendChild(sourcesBlock(hits.slice(0, 6), terms, data.mode === "search_only"));
+    }
+  }
+  const shown = new Set([...hits, ...cited].map(h => h.doc_code));
+  const rel = relatedBlock(data.related, shown);
+  if (rel) bubble.appendChild(rel);
+
+  if (data.mode === "answer") {
+    const act = document.createElement("div");
+    act.className = "actions";
+    act.innerHTML = `<button class="ghost">${ICON.copy}העתקת התשובה</button>`;
+    const btn = act.querySelector("button");
+    btn.addEventListener("click", async () => {
+      const src = cited.map(c => `${docTitle(c)} ${c.section ? "סעיף " + c.section : ""} – ${c.url}`).join("\n");
+      try { await navigator.clipboard.writeText(`${data.answer}\n\nמקורות:\n${src}`); btn.lastChild.textContent = "הועתק ✓"; }
+      catch { btn.lastChild.textContent = "ההעתקה נכשלה"; }
+    });
+    bubble.appendChild(act);
+  }
+  scrollDown();
+}
+
+// ---------------------------------------------------------------- flow
+async function ask(question) {
+  question = question.trim();
+  if (!question || busy) return;
+  busy = true; sendBtn.disabled = true;
+  input.value = ""; autosize();
+  addRow("user", `<p>${esc(question)}</p>`);
+  const bubble = addRow("bot", "");
+  const prog = progress(bubble);
+  const includeExpired = $("expired").checked;
+  try {
+    prog.step("מחפש בתוכן המלא של ההוראות");
+    const s = await api("/search?" + new URLSearchParams({q: question, include_expired: includeExpired}));
+    if (!llmEnabled) {
+      renderResult(bubble, {mode: s.hits.length ? "search_only" : "not_found", hits: s.hits, related: s.related}, question);
+      return;
+    }
+    prog.step(s.hits.length ? `נמצאו ${s.hits.length} קטעים רלוונטיים · מנסח תשובה ומאמת מקורות` : "מרחיב את החיפוש לניסוחים נוספים");
+    const a = await api("/ask", {method: "POST", headers: {"Content-Type": "application/json"},
+                                 body: JSON.stringify({question, include_expired: includeExpired})});
+    renderResult(bubble, a, question);
+  } catch (e) {
+    bubble.innerHTML = `<p class="err">משהו השתבש בחיבור לשרת (${esc(e.message)}). נסה/י שוב בעוד רגע.</p>`;
+  } finally {
+    busy = false; sendBtn.disabled = !input.value.trim(); input.focus();
+  }
+}
+
+function autosize() {
+  input.style.height = "auto";
+  input.style.height = Math.min(input.scrollHeight, 140) + "px";
+  sendBtn.disabled = busy || !input.value.trim();
+}
+input.addEventListener("input", autosize);
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(input.value); }
+});
+form.addEventListener("submit", e => { e.preventDefault(); ask(input.value); });
+$("reset").addEventListener("click", () => { if (!busy) { welcome(); input.focus(); } });
+
+async function loadStatus() {
+  const el = $("status"), txt = $("statusText");
+  try {
+    const h = await api("/health");
+    llmEnabled = !!(h.llm && h.llm.enabled);
+    el.className = "status" + (llmEnabled ? "" : " search");
+    txt.textContent = llmEnabled ? "מחובר" : "מצב חיפוש";
+    el.title = `${h.docs} מסמכים · ${h.chunks} קטעים` + (llmEnabled ? ` · ${h.llm.model}` : " · ללא מודל שפה");
+  } catch {
+    el.className = "status off"; txt.textContent = "לא זמין";
+  }
+}
+
+welcome();
+// Deep link: /?q=<question> asks it on load (shareable links to an answer).
+loadStatus().then(() => { if (params.get("q")) ask(params.get("q")); });
+input.focus();
+})();
+</script>
+</body>
+</html>

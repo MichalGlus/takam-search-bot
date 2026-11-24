@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>הדגמת הטמעה – עוזר הוראות תכ״ם</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f7fb;--surface:#fff;--text:#16203a;--muted:#5d6782;--line:#e3e8f2;--brand:#3557e6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Heebo,system-ui,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.ribbon{background:#16203a;color:#cfd6ea;font-size:.82rem;text-align:center;padding:8px 16px}
+.ribbon b{color:#fff}
+header{background:var(--surface);border-bottom:1px solid var(--line)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.top{display:flex;align-items:center;gap:14px;height:68px}
+.mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#2a46d1,#7a3fe6)}
+.top strong{font-size:1.08rem}
+nav{margin-inline-start:auto;display:flex;gap:22px;font-size:.92rem;color:var(--muted)}
+.hero{padding:44px 0 26px}
+.hero h1{margin:0 0 8px;font-size:2rem}
+.hero p{margin:0;color:var(--muted);max-width:640px;line-height:1.7}
+.search{margin-top:20px;display:flex;max-width:560px;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.search input{flex:1;border:0;padding:12px 14px;font:inherit}
+.search button{border:0;background:#e8ecf7;color:var(--muted);padding:0 18px;font:inherit}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:10px 0 40px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card .c{font-size:.78rem;color:var(--brand);font-weight:600;direction:ltr;text-align:right}
+.card h3{margin:6px 0 4px;font-size:1rem}
+.card p{margin:0;font-size:.86rem;color:var(--muted)}
+.embed{background:var(--surface);border:1px dashed #b9c3e0;border-radius:16px;padding:20px;margin-bottom:60px}
+.embed h2{margin:0 0 6px;font-size:1.1rem}
+.embed p{margin:0 0 12px;color:var(--muted);font-size:.92rem}
+pre{margin:0;background:#0f1630;color:#d7e0ff;border-radius:10px;padding:14px;direction:ltr;text-align:left;overflow:auto;font-size:.9rem}
+@media (max-width:640px){nav{display:none}.hero h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<div class="ribbon"><b>דף הדגמה</b> · אתר לדוגמה שהעוזר מוטמע בו בשורת קוד אחת. לחצו על הכפתור בפינת המסך.</div>
+<header>
+  <div class="wrap top">
+    <div class="mark" aria-hidden="true"></div>
+    <strong>פורטל הוראות (הדגמה)</strong>
+    <nav><span>הוראות</span><span>הודעות</span><span>טפסים</span><span>מכרזים</span></nav>
+  </div>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <h1>הוראות פרק 1 – ביצוע תקציב</h1>
+    <p>בחיפוש הרגיל באתר מחפשים רק בשמות ובמילות המפתח של ההוראות. העוזר מחפש בתוכן המלא, עונה עם מקור מדויק, ומציין אם יש הוראה זמנית או הודעה שמשנה את ההוראה.</p>
+    <div class="search"><input placeholder="חיפוש לפי שם הוראה…" disabled><button disabled>חיפוש</button></div>
+  </section>
+  <section class="grid" aria-label="הוראות לדוגמה">
+    <div class="card"><div class="c">1.3.1</div><h3>התחייבות בשם המדינה</h3><p>מורשי חתימה, רמות הרשאה, התחייבות בין-משרדית</p></div>
+    <div class="card"><div class="c">1.4.5</div><h3>תשלום מקדמות</h3><p>תנאים לתשלום מקדמה, ערבויות, מקדמות שכר</p></div>
+    <div class="card"><div class="c">1.5.2</div><h3>דמי מחזור יחידתיים</h3><p>קופת מזומן, כרטיס אשראי או נטען, תקרות</p></div>
+    <div class="card"><div class="c">1.6.4</div><h3>תשלומים במטבע חוץ</h3><p>תשלום דרך בנק ישראל, "כספת", הפרשי שער</p></div>
+    <div class="card"><div class="c">1.6.6</div><h3>עיקול, המחאות זכות, קיזוז חובות</h3><p>צווי עיקול, פקטורינג, המחאת זכות לצד ג'</p></div>
+    <div class="card"><div class="c">1.9.1</div><h3>אישור ניהול ספרים תקין</h3><p>מוטב שנחסם במערכת סיגמה</p></div>
+  </section>
+  <section class="embed">
+    <h2>איך מטמיעים באתר קיים</h2>
+    <p>מוסיפים שורה אחת לפני סוף ה-<code>body</code>. הווידג'ט נטען רק כשלוחצים עליו, ולא משפיע על עיצוב האתר.</p>
+    <pre id="snippet"></pre>
+  </section>
+</main>
+<script>
+  document.getElementById("snippet").textContent =
+    '<script src="' + location.origin + '/widget.js" data-position="left" defer><\/script>';
+</script>
+<script src="/widget.js" data-position="left" defer></script>
+</body>
+</html>
